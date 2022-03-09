@@ -1,99 +1,77 @@
 class __Promise {
-  constructor(fn) {
-    if (!(fn instanceof Function)) {
-      throw new TypeError('')
-    }
-
-    this.state = 'pending';
-    this.value = undefined;
+  constructor(executor) {
+    this.state = 'pending'
+    this.value = undefined
     this.queue = []
-    this.thenResult = null
 
-    try{
-      fn(this.resolve, this.reject)
-    }catch(e){
-      this.reject(e)
+    const transitionTo = state => v => {
+      if (this.state !== 'pending') return
+      this.state = state
+      this.value = v
+      this.queue.forEach(f => f())
     }
-  }
 
-  resolve = value => {
-    if (this.state !== 'pending') return
-    this.state = 'fulfilled'
-    this.value = value
-    this.queue.forEach(f => f())
-  }
-
-  reject = reason => {
-    if (this.state !== 'pending') return
-    this.state = 'rejected'
-    this.value = reason
-
-    this.queue.forEach(f => f())
+    try {
+      executor(transitionTo('fulfilled'), transitionTo('rejected'))
+    } catch (e) {
+      transitionTo('rejected')(e)
+    }
   }
 
   then(onFulfilled, onRejected) {
-    onFulfilled = onFulfilled instanceof Function ? onFulfilled : v => v
-    onRejected = onRejected instanceof Function ? onRejected : e => { throw e }
-    this.thenResult = new __Promise((resolve, reject) => {
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v => v
+    onRejected = typeof onRejected === 'function' ? onRejected : e => { throw e }
+
+    const promise2 = new __Promise((resolve, reject) => {
       const fn = () => {
         setTimeout(() => {
-          let x
           try {
             const cb = this.state === 'fulfilled' ? onFulfilled : onRejected
-            x = cb.call(undefined, this.value)
+            promiseReolve(promise2, cb(this.value), resolve, reject)
           } catch (e) {
             reject(e)
-            return
           }
-          this.thenResult.promiseResolve(x)
         })
       }
-  
       if (this.state === 'pending') {
         this.queue.push(fn)
       } else {
         fn()
       }
-     })
-    return this.thenResult
+    })
+    return promise2
   }
+}
 
-  promiseResolve(x) {
-    if (this === x) {
-      return this.reject(new TypeError('Chaining cycle detected for promise'))
-    }
+function promiseReolve(promise2, x, resolve, reject) {
+  if (x === promise2) return reject(new TypeError('Chaining cycle detected for promise'))
 
-
-    if (x instanceof __Promise) {
-      x.then(
-        v => this.resolve(v),
-        e => this.reject(e)
-      )
-      return
-    }
-    if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
-      let then;
-      try {
-        then = x.then
-      } catch (e) {
-        this.reject(e)
-      }
+  //2.3.3.3.3
+  let called = false;
+  let onece = (fn) => {
+    if (called) return
+    called = true
+    fn()
+  }
+  if (x != null && (typeof x === 'object' || typeof x === 'function')) {
+    try {
+      const then = x.then
       if (typeof then === 'function') {
-        try {
-          then.call(
-            x,
-            y => this.promiseResolve(y),
-            r => this.reject(r)
-          )
-        } catch (e) {
-          this.reject(e)
-        }
+        then.call(
+          x,
+          //2.3.3.3.3
+          y => onece(() => promiseReolve(promise2, y, resolve, reject)),
+          r => onece(() => reject(r))
+        )
       } else {
-        this.resolve(x)
+        resolve(x)
       }
-    } else {
-      this.resolve(x)
+    } catch (e) {
+      //2.3.3.3.4.1
+      onece(() => reject(e))
     }
+  } else {
+    resolve(x)
   }
 }
 

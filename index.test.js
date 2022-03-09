@@ -1,7 +1,7 @@
 const chai = require('chai')
 const sinonChai = require('sinon-chai')
 const sinon = require('sinon')
-const {describe, it} = require('mocha')
+const { describe, it } = require('mocha')
 const __Promise = require('./index')
 
 chai.use(sinonChai)
@@ -444,24 +444,6 @@ describe('2.2.7', () => {
     setTimeout(() => {
       expect(p2.state).to.eq(p2.state)
       expect(p2.value).to.eq(p2.value)
-      done()
-    })
-  })
-})
-
-
-describe('2.2.6.1', done => {
-  it('then.then', () => {
-    let obj = { name: 1 }
-    let p1 = new __Promise(resolve => resolve(obj))
-
-    
-
-    const err = new Error('')
-    p1.then(() => { throw err }).then(null, (e) => {
-      console.log('12312312')
-      expect(e).to.eq(err)
-      console.log('22222222')
       done()
     })
   })
