@@ -1,3 +1,3 @@
 ## z-promise.js
 
-目前跑通70%左右的[aplus tests](https://github.com/promises-aplus/promises-tests)，`thenable`部分还有问题，需要看书研究下了
+Has passed 70% of [aplus tests](https://github.com/promises-aplus/promises-tests) test cases, there are still probles in the `thenable` part, reading and learing.
