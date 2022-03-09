@@ -1,0 +1,22 @@
+{
+  "name": "z-promise.js",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+		"test:own": "mocha index.test.js",
+		"test:aplus": "promises-aplus-tests adapter.js"
+  },
+  "keywords": [
+    "promise"
+  ],
+  "author": "zink",
+  "license": "MIT",
+  "dependencies": {
+    "promises-aplus-tests": "*",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.1",
+    "sinon": "^13.0.1",
+    "sinon-chai": "^3.7.0"
+  }
+}
