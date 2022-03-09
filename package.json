@@ -1,8 +1,11 @@
 {
   "name": "z-promise.js",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "Promises/A+ implementation.",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ZinkWu/z-promise.js.git"
+  },
   "scripts": {
 		"test:own": "mocha index.test.js",
 		"test:aplus": "promises-aplus-tests adapter.js"
