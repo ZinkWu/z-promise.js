@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 specifiers:
   chai: ^4.3.6
@@ -194,10 +194,16 @@ packages:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: false
 
-  /debug/2.2.0:
+  /debug/2.2.0_supports-color@1.2.0:
     resolution: {integrity: sha1-+HBX6ZWxofauaklgZkE3vFbwOdo=}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 0.7.1
+      supports-color: 1.2.0
     dev: false
 
   /debug/4.3.3_supports-color@8.1.1:
@@ -688,7 +694,7 @@ packages:
     hasBin: true
     dependencies:
       commander: 2.3.0
-      debug: 2.2.0
+      debug: 2.2.0_supports-color@1.2.0
       diff: 1.4.0
       escape-string-regexp: 1.0.2
       glob: 3.2.11
