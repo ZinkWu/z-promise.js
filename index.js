@@ -27,7 +27,7 @@ class __Promise {
         setTimeout(() => {
           try {
             const cb = this.state === 'fulfilled' ? onFulfilled : onRejected
-            promiseReolve(promise2, cb(this.value), resolve, reject)
+            promiseResolve(promise2, cb(this.value), resolve, reject)
           } catch (e) {
             reject(e)
           }
@@ -43,12 +43,12 @@ class __Promise {
   }
 }
 
-function promiseReolve(promise2, x, resolve, reject) {
+function promiseResolve(promise2, x, resolve, reject) {
   if (x === promise2) return reject(new TypeError('Chaining cycle detected for promise'))
 
   //2.3.3.3.3
   let called = false;
-  let onece = (fn) => {
+  let once = (fn) => {
     if (called) return
     called = true
     fn()
@@ -60,15 +60,15 @@ function promiseReolve(promise2, x, resolve, reject) {
         then.call(
           x,
           //2.3.3.3.3
-          y => onece(() => promiseReolve(promise2, y, resolve, reject)),
-          r => onece(() => reject(r))
+          y => once(() => promiseResolve(promise2, y, resolve, reject)),
+          r => once(() => reject(r))
         )
       } else {
         resolve(x)
       }
     } catch (e) {
       //2.3.3.3.4.1
-      onece(() => reject(e))
+      once(() => reject(e))
     }
   } else {
     resolve(x)
